@@ -622,7 +622,7 @@ function render(){
     var cdn=tab==="customers"?cDup().length:0;
     body=(tab==="team"?'<p><button data-act="tab" data-t="settings">← ตั้งค่า / คู่มือ</button></p><div class="card" style="margin-bottom:10px;font-size:13px">รหัสสมาชิกออกโดย <b>บริษัท ศรีกรุงโบรคเกอร์</b> · ได้รหัสแล้วค่อยกด <b>+ สมาชิก</b> มาบันทึก · สมาชิกที่สร้างจะอยู่ <b>ใต้สายงานของฉัน</b> · ข้อมูลสมาชิกไม่ควรลบ ใช้สถานะ <b>พักไว้</b> แทน'+(D.teamMembers.length?"":'<div style="margin-top:6px"><b>ยังไม่มีสมาชิก</b> กด + สมาชิก เพื่อเริ่ม</div>')+'</div>':"")+(cdn?'<div class="card" style="border-color:var(--ac);margin-bottom:10px"><b>พบลูกค้าชื่อซ้ำ '+cdn+' ชื่อ</b><p class="mu" style="margin:4px 0 8px">มักเกิดจากระบบเดิมที่สร้างลูกค้าใหม่ทุกครั้งที่เพิ่มรถ · ตรวจแล้วรวมเป็นคนเดียว</p><button class="p" data-act="cmerge">ตรวจและรวมลูกค้า</button></div>':'')+'<div class="bar"><input type="search" id="q" placeholder="ค้นหา ทะเบียน / ชื่อ / เบอร์โทร / เลขกรมธรรม์ / ช่องทาง" value="'+esc(q)+'">'+(tab==="customers"?'<button class="p" data-act="newc">+ ลูกค้า</button>':tab==="policies"?'<button class="p" style="white-space:nowrap" data-act="newp">+ กรมธรรม์</button>':tab==="nonMotor"?'<button class="p" style="white-space:nowrap" data-act="newo" data-k="nonMotor">+ ประกันอื่นๆ</button>':tab==="life"?'<button class="p" style="white-space:nowrap" data-act="newo" data-k="life">+ ประกันชีวิต</button>':tab==="team"?'<button class="p" style="white-space:nowrap" data-act="newtm">+ สมาชิก</button>':"")+"</div>"+chx+pager(rows.length,"t")+'<div class="card">'+table(tab,pgSlice(rows))+"</div>"+pager(rows.length,"b");
   }
-  a.innerHTML='<div class="top"><div class="brand"><img src="'+LOGO+'" alt="SKB"><div><h1>SKB Team</h1><div style="margin-top:2px">'+lvBadge()+'</div></div></div><div style="text-align:right"><span class="mu">'+stat()+' · SKB 1.1 (v139)</span> <button data-act="tab" data-t="settings" title="ตั้งค่าและคู่มือ">⚙ ตั้งค่า / คู่มือ</button></div></div>'+
+  a.innerHTML='<div class="top"><div class="brand"><img src="'+LOGO+'" alt="SKB"><div><h1>SKB Team</h1><div style="margin-top:2px">'+lvBadge()+'</div></div></div><div style="text-align:right"><span class="mu">'+stat()+' · SKB 1.2 (v139)</span> <button data-act="tab" data-t="settings" title="ตั้งค่าและคู่มือ">⚙ ตั้งค่า / คู่มือ</button></div></div>'+
     '<div class="gs"><input type="search" id="gq" placeholder="🔍 ค้นหาทั้งหมด: ทะเบียน / ชื่อ / เบอร์โทร / เลขกรมธรรม์" value="'+esc(G.gq||"")+'"></div>'+banner()+nav+body;
   if(tab==="plan")planCalc();if(tab==="settings"&&window.skbSettings)skbSettings(a);
   if(tab==="settings"&&ASSETS&&ASSETS.list)ASSETS.list().then(function(L){var u=L.usage,el=$("#stor");if(el&&u)el.innerHTML='<p class="mu" style="margin:0">ใช้ไป '+fsz(u.bytes)+' จาก '+fsz(u.maxBytes)+' ('+u.files+' / '+u.maxFiles+' ไฟล์)</p>'}).catch(function(){});
@@ -2516,17 +2516,17 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-act
 /* ---------- หน้าเข้าสู่ระบบ ---------- */
 function gate(mode,note){
   var g=$1("#skbgate");g.hidden=false;var su=mode==="up",fg=mode==="forgot",np=mode==="newpw";
-  g.innerHTML='<div class="gbox"><img src="'+window.SKB_LOGO+'" alt="SKB" class="glogo"><h1>SKB Team</h1><p class="mu">ระบบจัดการงานประกันสำหรับสมาชิกทีม SKB</p>'+
-   (np?'<h2>ตั้งรหัสผ่านใหม่</h2><label>รหัสผ่านใหม่ (อย่างน้อย 8 ตัว)</label><input id="g_pw" type="password" autocomplete="new-password"><button class="p gbtn" id="g_go">บันทึกรหัสผ่านใหม่</button>':
-    '<div class="gtab"><button data-m="in" class="'+(!su&&!fg?"on":"")+'">เข้าสู่ระบบ</button><button data-m="up" class="'+(su?"on":"")+'">สมัครสมาชิก</button></div>'+
+  g.innerHTML='<form class="gbox" id="g_form" method="post" action="#" autocomplete="on"><img src="'+window.SKB_LOGO+'" alt="SKB" class="glogo"><h1>SKB Team</h1><p class="mu">ระบบจัดการงานประกันสำหรับสมาชิกทีม SKB</p>'+
+   (np?'<h2>ตั้งรหัสผ่านใหม่</h2><label>รหัสผ่านใหม่ (อย่างน้อย 8 ตัว)</label><input id="g_pw" name="password" type="password" autocomplete="new-password"><button type="submit" class="p gbtn" id="g_go">บันทึกรหัสผ่านใหม่</button>':
+    '<div class="gtab"><button type="button" data-m="in" class="'+(!su&&!fg?"on":"")+'">เข้าสู่ระบบ</button><button type="button" data-m="up" class="'+(su?"on":"")+'">สมัครสมาชิก</button></div>'+
    (su?'<label>ชื่อ-นามสกุล</label><input id="g_n" autocomplete="name"><label>รหัสสมาชิกศรีกรุง (เช่น AM00012345)</label><input id="g_c" inputmode="numeric" placeholder="AM00…"><label>รหัสอัพไลน์ / ผู้แนะนำ</label><input id="g_u" placeholder="AM00…"><label>เบอร์โทร</label><input id="g_t" inputmode="tel">':'')+
-   '<label>อีเมล</label><input id="g_e" type="email" autocomplete="email">'+(fg?'':'<label>รหัสผ่าน'+(su?' (อย่างน้อย 8 ตัว)':'')+'</label><input id="g_pw" type="password" autocomplete="'+(su?"new-password":"current-password")+'">')+
-   '<button class="p gbtn" id="g_go">'+(su?"สมัครสมาชิก":fg?"ส่งลิงก์ตั้งรหัสผ่านใหม่":"เข้าสู่ระบบ")+'</button>'+(su||fg?'':'<p style="text-align:center;margin:10px 0 0"><a href="#" data-m="forgot">ลืมรหัสผ่าน?</a></p>')+(fg?'<p style="text-align:center;margin:10px 0 0"><a href="#" data-m="in">← กลับไปเข้าสู่ระบบ</a></p>':''))+
-   '<p id="g_msg" class="gmsg">'+(note||"")+'</p>'+(su?'<p class="mu" style="font-size:12px">ข้อมูลลูกค้าของคุณเห็นได้เฉพาะคุณ · ผู้ดูแลจะตรวจรหัสสมาชิกเพื่อเชื่อมยอดกับสายงาน</p>':'')+'<p class="mu" style="font-size:11.5px;margin-top:14px">'+E(window.SKB_DISC||"")+'</p></div>';
+   '<label>อีเมล</label><input id="g_e" name="username" type="email" autocomplete="username">'+(fg?'':'<label>รหัสผ่าน'+(su?' (อย่างน้อย 8 ตัว)':'')+'</label><input id="g_pw" name="password" type="password" autocomplete="'+(su?"new-password":"current-password")+'">')+
+   '<button type="submit" class="p gbtn" id="g_go">'+(su?"สมัครสมาชิก":fg?"ส่งลิงก์ตั้งรหัสผ่านใหม่":"เข้าสู่ระบบ")+'</button>'+(su||fg?'':'<p style="text-align:center;margin:10px 0 0"><a href="#" data-m="forgot">ลืมรหัสผ่าน?</a></p>')+(fg?'<p style="text-align:center;margin:10px 0 0"><a href="#" data-m="in">← กลับไปเข้าสู่ระบบ</a></p>':''))+
+   '<p id="g_msg" class="gmsg">'+(note||"")+'</p>'+(su?'<p class="mu" style="font-size:12px">ข้อมูลลูกค้าของคุณเห็นได้เฉพาะคุณ · ผู้ดูแลจะตรวจรหัสสมาชิกเพื่อเชื่อมยอดกับสายงาน</p>':'')+'<p class="mu" style="font-size:11.5px;margin-top:14px">'+E(window.SKB_DISC||"")+'</p></form>';
   g.querySelectorAll("[data-m]").forEach(function(b){b.onclick=function(e){e.preventDefault();gate(b.dataset.m)}});
   var go=$1("#g_go"),say=function(t,bad){var m=$1("#g_msg");m.textContent=t;m.className="gmsg"+(bad?" bad":" ok")};
-  g.querySelectorAll("input").forEach(function(i){i.onkeydown=function(e){if(e.key==="Enter")go.click()}});
-  go.onclick=async function(){go.disabled=true;try{
+  var keep=function(em,pw){try{if(window.PasswordCredential&&navigator.credentials)return navigator.credentials.store(new PasswordCredential({id:em,password:pw,name:em})).catch(function(){})}catch(e){}return Promise.resolve()};
+  $1("#g_form").onsubmit=async function(ev){ev.preventDefault();if(go.disabled)return;go.disabled=true;try{
     if(np){var p=$1("#g_pw").value;if(p.length<8)throw new Error("รหัสผ่านอย่างน้อย 8 ตัว");fail(await sb.auth.updateUser({password:p}));history.replaceState(null,"",location.pathname);say("ตั้งรหัสผ่านใหม่แล้ว");setTimeout(function(){location.reload()},900);return}
     var em=$1("#g_e").value.trim();if(!/^\S+@\S+\.\S+$/.test(em))throw new Error("กรอกอีเมลให้ถูกต้อง");
     if(fg){fail(await sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+location.pathname}));say("ส่งลิงก์ไปที่อีเมลแล้ว เปิดอีเมลแล้วกดลิงก์");return}
@@ -2534,9 +2534,9 @@ function gate(mode,note){
     if(su){var nm=$1("#g_n").value.trim(),c=ck($1("#g_c").value),u=ck($1("#g_u").value);if(!nm)throw new Error("กรอกชื่อ-นามสกุล");if(!c)throw new Error("กรอกรหัสสมาชิก");if(pw.length<8)throw new Error("รหัสผ่านอย่างน้อย 8 ตัว");
       var r=fail(await sb.auth.signUp({email:em,password:pw,options:{emailRedirectTo:location.origin+location.pathname,data:{full_name:nm,member_code:c,upline_code:u,phone:$1("#g_t").value.trim()}}}));
       if(!r.data.session){say("สมัครแล้ว! เปิดอีเมล "+em+" แล้วกดลิงก์ยืนยัน จากนั้นกลับมาเข้าสู่ระบบ");return}
-      return start(r.data.session)}
+      await keep(em,pw);return start(r.data.session)}
     var r2=await sb.auth.signInWithPassword({email:em,password:pw});if(r2.error)throw new Error(/confirm/i.test(r2.error.message)?"ยังไม่ได้ยืนยันอีเมล เปิดอีเมลแล้วกดลิงก์ยืนยันก่อน":/invalid/i.test(r2.error.message)?"อีเมลหรือรหัสผ่านไม่ถูกต้อง":r2.error.message);
-    return start(r2.data.session)
+    await keep(em,pw);return start(r2.data.session)
   }catch(e){say(e.message||String(e),true)}finally{go.disabled=false}}
 }
 
