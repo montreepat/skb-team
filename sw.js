@@ -1,5 +1,5 @@
 /* SKB Team service worker: เปิดแอปได้เร็ว และเปิดหน้าแรกได้แม้เน็ตหลุดชั่วคราว (ข้อมูลยังมาจากระบบกลาง) */
-const C = "skb-team-v1";
+const C = "skb-team-v15";
 self.addEventListener("install", e => { e.waitUntil(caches.open(C).then(c => c.addAll(["./", "./index.html", "./manifest.webmanifest", "./icon-192.png"])).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {
